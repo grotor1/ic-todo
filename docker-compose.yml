@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  client-frontend:
+    image: frontend:0.0.1
+    build:
+      context: ./frontend
+      dockerfile: frontend/docker/Dockerfile
+    restart: always
+    ports:
+      - '5173:80'
+
+  client-backend:
+    image: backend:0.0.1
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-db
+
+  service-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+volumes:
+  db-data:
